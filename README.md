@@ -16,13 +16,13 @@ A premium and responsive travel website designed to showcase beautiful island de
 
 ## 🖥️ Project Screenshots
 
-### Homepage
+### 1. Homepage
 ![Homepage](screenshot-home.webp)
 
-### Destinations
+### 2. Destinations
 ![Destinations](screenshot-destinations.webp)
 
-### Travel Experience
+### 3. Travel Experience
 ![Travel Experience](screenshot-experience.webp)
 
 # Technologies Used
