@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wayfarer — Journeys timed to the light</title>
+<meta name="description" content="Handpicked island stays, private sailings and unhurried itineraries, planned around golden hour.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#06151d;--deep:#0c2a38;--sand:#f5ebdc;--gold:#f0a95b;--lagoon:#63d2c6;--mute:rgba(245,235,220,.72);
+--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+--pad:max(clamp(20px,5vw,72px),calc((100vw - 1120px)/2));color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--sand);font:400 1rem/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+img,video{max-width:100%}
+/* nav */
+header{position:fixed;inset:0 0 auto;z-index:20;padding:calc(env(safe-area-inset-top,0px) + 16px) var(--pad) 16px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,backdrop-filter .4s}
+header::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(6,21,29,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);opacity:0;transition:opacity .4s;pointer-events:none}
+header.solid::before{opacity:1}
+.logo{font:500 1.7rem/1 var(--serif);letter-spacing:.02em}
+nav ul{display:flex;gap:2rem;list-style:none;margin:0;padding:0;font-size:.92rem;font-weight:500}
+nav a:hover{color:var(--gold)}
+.menu{display:none;position:relative;width:46px;height:46px;padding:0;background:none;border:1px solid rgba(245,235,220,.4);border-radius:50%;color:inherit;cursor:pointer}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 1.9rem;border-radius:99px;font:600 .95rem var(--sans);border:1px solid transparent;cursor:pointer;transition:transform .25s,background .25s,border-color .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--gold);color:#2a1503}
+.btn.primary:hover{background:#f6bd7c}
+.btn.ghost{border-color:rgba(245,235,220,.5);color:var(--sand)}
+.btn.ghost:hover{border-color:var(--sand);background:rgba(245,235,220,.08)}
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px var(--pad) clamp(28px,5vh,56px);overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#1b3a4d,#e08a52 70%,#2a1b2e)}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(6,21,29,.62) 0%,rgba(6,21,29,.3) 38%,rgba(6,21,29,.78) 100%),linear-gradient(90deg,rgba(6,21,29,.55),transparent 70%)}
+.hero h1{font:300 clamp(2.5rem,7vw,5.6rem)/.96 var(--serif);letter-spacing:-.015em;margin:0 0 1.4rem}
+.hero h1 span{white-space:nowrap;padding-bottom:.1em}
+.hero h1 span{display:block;overflow:hidden}
+.hero h1 span>i{display:block;font-style:italic;font-weight:300;transform:translateY(105%);animation:rise 1.2s cubic-bezier(.2,.8,.2,1) forwards}
+.hero h1 span:nth-child(2)>i{animation-delay:.18s}.hero h1 span:nth-child(3)>i{animation-delay:.36s}
+@keyframes rise{to{transform:none}}
+.lede{max-width:34rem;color:var(--mute);font-size:clamp(1rem,1.3vw,1.12rem);margin:0 0 2rem;opacity:0;animation:fade 1s .9s forwards}
+.cta{display:flex;flex-wrap:wrap;gap:.9rem;margin-bottom:clamp(28px,6vh,64px);opacity:0;animation:fade 1s 1.1s forwards}
+@keyframes fade{to{opacity:1}}
+.search{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:1px;background:rgba(245,235,220,.18);border:1px solid rgba(245,235,220,.18);border-radius:22px;overflow:hidden;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;animation:fade 1s 1.3s forwards}
+.search label{display:flex;flex-direction:column;gap:2px;padding:14px 20px;background:rgba(6,21,29,.55);font-size:.78rem;color:var(--mute)}
+.search select,.search input{background:none;border:0;color:var(--sand);font:500 1rem var(--sans);padding:2px 0;width:100%;min-width:0;color-scheme:dark}
+.search select option{background:var(--deep)}
+.search .btn{border-radius:0;min-height:68px}
+.vid-toggle{position:absolute;right:var(--pad);top:calc(env(safe-area-inset-top,0px) + 84px);z-index:5;background:rgba(6,21,29,.5);color:var(--sand);border:1px solid rgba(245,235,220,.3);border-radius:99px;padding:.4rem .9rem;font:500 .78rem var(--sans);cursor:pointer}
+.page{display:none}.page.on{display:block}
+.phero{position:relative;min-height:86vh;min-height:86svh;display:flex;flex-direction:column;justify-content:flex-end;padding:140px var(--pad) clamp(36px,6vh,64px)}
+.phero h1{font:300 clamp(2.4rem,5.5vw,4.4rem)/1.02 var(--serif);margin:0 0 1rem;max-width:14ch}
+.phero p{max-width:34rem;color:var(--mute);margin:0}
+.rows{border-top:1px solid rgba(245,235,220,.18)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.5rem 0;border-bottom:1px solid rgba(245,235,220,.18);font:300 clamp(1.7rem,3.4vw,2.6rem)/1.1 var(--serif);transition:padding .35s,color .35s}
+.row small{display:block;font:500 .9rem var(--sans);color:var(--mute);margin-top:.3rem}
+.row:hover{padding-left:1rem;color:var(--gold)}
+nav a.cur{color:var(--gold)}
+.bg{position:fixed;inset:0;z-index:-1;background:#1b3a4d;overflow:hidden}
+.bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,21,29,.6),rgba(6,21,29,.3) 45%,rgba(6,21,29,.72))}
+.bg.still{background:url(images/river.webp) center/cover;animation:kb 26s ease-in-out infinite alternate}
+@keyframes kb{to{transform:scale(1.08)}}
+.sub section.block{background:rgba(6,21,29,.58)}
+[hidden]{display:none!important}
+.phero.short{min-height:50vh;min-height:50svh}
+.bg.warm{background:url(images/sunset-chairs.webp) center/cover,linear-gradient(160deg,#0c2a38,#3a2230 55%,#c9763f)}
+.contact{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.panel{background:rgba(6,21,29,.62);border:1px solid rgba(245,235,220,.16);border-radius:24px;padding:clamp(20px,3vw,36px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+fieldset{border:0;padding:0;margin:0 0 1.8rem;min-width:0}
+legend{font:500 1.5rem/1.2 var(--serif);color:var(--gold);padding:0;margin-bottom:1rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f{display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--mute);min-width:0}
+.f.full{grid-column:1/-1}
+.f input,.f select,.f textarea{background:rgba(245,235,220,.07);border:1px solid rgba(245,235,220,.22);border-radius:14px;color:var(--sand);font:400 1rem var(--sans);padding:14px 16px;min-height:50px;width:100%;color-scheme:dark}
+.f textarea{min-height:110px;resize:vertical}
+.f select option{background:var(--deep)}
+.f input:focus,.f select:focus,.f textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pay label{position:relative;display:flex;flex-direction:column;gap:2px;padding:14px 16px;border:1px solid rgba(245,235,220,.22);border-radius:14px;cursor:pointer;font-weight:600;font-size:.95rem}
+.pay label small{font-weight:400;color:var(--mute);font-size:.8rem}
+.pay input{position:absolute;opacity:0}
+.pay label:has(input:checked){border-color:var(--gold);background:rgba(240,169,91,.12)}
+.pay label:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.note{font-size:.82rem;color:var(--mute);margin:.8rem 0 0}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:var(--mute);margin:0 0 1.4rem}
+.chk input{margin-top:3px;accent-color:var(--gold);width:18px;height:18px;flex:none}
+.side{display:grid;gap:18px;position:sticky;top:96px}
+.who{display:flex;gap:14px;align-items:center}
+.who small{display:block;color:var(--mute)}
+.av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#c9763f);color:#2a1503;display:grid;place-items:center;font:500 1.6rem var(--serif);flex:none}
+.panel h3{font:500 1.5rem/1.1 var(--serif);margin:0 0 1rem}
+.sum dl{margin:0;display:grid;gap:10px}
+.sum dl div{display:flex;justify-content:space-between;gap:1rem;font-size:.95rem}
+.sum dt{color:var(--mute)}.sum dd{margin:0;font-weight:600;text-align:right}
+.sum .due{border-top:1px solid rgba(245,235,220,.18);padding-top:12px;font-size:1.1rem}.sum .due dd{color:var(--gold)}
+.cd{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.95rem}.cd a:hover{color:var(--gold)}
+.done{text-align:center}.done h3{font-size:2rem}
+.done .cta{justify-content:center;opacity:1;animation:none;margin:1.4rem 0 0}
+.lnk{background:none;border:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+:root{--im-maldives:url(images/maldives.webp);--im-bora-bora:url(images/bora-bora.webp);--im-santorini:url(images/santorini.webp);--im-bali:url(images/bali.webp);--im-seychelles:url(images/seychelles.webp)}
+.back{margin:0 auto 0 1.2rem;background:none;border:1px solid rgba(245,235,220,.4);color:inherit;border-radius:99px;padding:.45rem 1rem;font:500 .85rem var(--sans);cursor:pointer}
+.back:hover{border-color:var(--gold);color:var(--gold)}
+.chip{align-self:flex-start;margin-top:1.2rem;padding:.55rem 1.1rem;border:1px solid rgba(245,235,220,.4);border-radius:99px;font-weight:600;font-size:.92rem;background:rgba(6,21,29,.4)}
+.hl{list-style:none;padding:0;margin:0 0 .4rem;display:grid;gap:.6rem}
+.hl li{position:relative;padding-left:1.4rem}
+.hl li::before{content:"";position:absolute;left:0;top:.68em;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.facts{margin:0 0 .4rem;display:grid;gap:12px}
+.facts div{display:flex;justify-content:space-between;gap:1.5rem;font-size:.95rem}
+.facts dt{color:var(--mute);flex:none}.facts dd{margin:0;font-weight:600;text-align:right}
+.panel h3:not(:first-child){margin-top:1.8rem}
+.panel>p{margin:0 0 .4rem;color:var(--mute)}
+.hero.start{justify-content:center;align-items:center;text-align:center}
+.hero.start h1{font-size:clamp(3.2rem,10vw,7.5rem);margin-bottom:1rem}
+.hero.start .lede{margin:0 auto 2.2rem}
+.hero.start .cta{justify-content:center;margin-bottom:0}
+.intro header .back{display:none}
+.tour{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(6,21,29,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(245,235,220,.2);padding:12px var(--pad) calc(12px + env(safe-area-inset-bottom,0px))}
+.tour-in{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.tour b{display:block;font-size:.95rem}.tour small{display:block;color:var(--mute);font-size:.82rem}
+.tour .btn{min-height:46px;padding:0 1.6rem;flex:none}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+.tour.pulse{animation:pls .6s}
+@keyframes pls{30%{transform:translateY(-8px);background:rgba(240,169,91,.35)}}
+.touring{padding-bottom:84px}
+.bars{position:absolute;left:50%;top:50%;width:18px;height:12px;transform:translate(-50%,-50%)}
+.bars i{position:absolute;left:0;width:100%;height:2px;background:currentColor;border-radius:2px;transition:transform .3s,opacity .3s}
+.bars i:nth-child(1){top:0}.bars i:nth-child(2){top:5px}.bars i:nth-child(3){top:10px}
+.menu.open .bars i:nth-child(1){transform:translateY(5px) rotate(45deg)}.menu.open .bars i:nth-child(2){opacity:0}.menu.open .bars i:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+.tour-act{display:flex;align-items:center;gap:1rem;flex:none}
+/* sections */
+section.block{padding:clamp(64px,7.5vw,104px) var(--pad)}
+.head{display:flex;justify-content:space-between;align-items:end;gap:2rem;flex-wrap:wrap;margin-bottom:3rem}
+h2{font:300 clamp(2rem,4vw,3.3rem)/1.05 var(--serif);margin:0;max-width:14ch}
+.head p{max-width:30rem;color:var(--mute);margin:0}
+.dest{display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-auto-rows:clamp(240px,20vw,280px);gap:18px}
+.card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:1.6rem;border-radius:28px;overflow:hidden;isolation:isolate;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.card::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--g);background-color:var(--deep);transition:transform .8s}
+.card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 40%,rgba(6,21,29,.82))}
+.card:hover::before{transform:scale(1.06)}
+.card.tall{grid-row:span 2}
+.card h3{font:500 clamp(1.45rem,2vw,1.9rem)/1.05 var(--serif);margin:0 0 .3rem}
+.card p{margin:0;font-size:.92rem;color:rgba(245,235,220,.85)}
+.card small{font-size:.82rem;color:var(--gold);font-weight:600;margin-top:.7rem}
+.why{background:var(--deep)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,64px)}
+.feat h3{font:500 1.5rem/1.1 var(--serif);margin:0 0 .6rem;color:var(--gold)}
+.feat p{margin:0;color:var(--mute);max-width:30ch}
+.story{display:grid;grid-template-columns:minmax(0,.6fr) minmax(0,1.4fr);gap:clamp(28px,6vw,96px);align-items:center}
+.story figure{margin:0;border-radius:28px;overflow:hidden;aspect-ratio:4/5;max-height:60vh}
+.story img{width:100%;height:100%;object-fit:cover;display:block}
+.story blockquote{font:300 italic clamp(1.7rem,3vw,2.5rem)/1.15 var(--serif);margin:0 0 1.4rem;max-width:20ch}
+.story cite{display:block;font-style:normal;color:var(--mute);font-size:.92rem;margin-bottom:2rem}
+.story p{margin:0}
+.close{position:relative;text-align:center;padding:clamp(80px,9vw,128px) var(--pad);background:linear-gradient(180deg,var(--ink),rgba(58,34,48,.6) 55%,rgba(201,118,63,.92)),#3a2230;isolation:isolate}
+.close h2{margin:0 auto 1.6rem;max-width:18ch}
+.close .cta{justify-content:center;margin:0;opacity:1;animation:none}
+footer{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;padding:28px var(--pad);font-size:.85rem;color:var(--mute);background:#c9763f;color:#2a1503}
+footer a:hover{text-decoration:underline}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.dest.two{grid-template-columns:1fr 1fr;grid-auto-rows:clamp(260px,22vw,300px)}
+.dest.three{grid-template-columns:1.3fr 1fr}
+.close.photo{background:linear-gradient(180deg,var(--ink),rgba(6,21,29,.35) 35%,rgba(58,34,48,.55) 70%,rgba(201,118,63,.92)),url(images/village.webp) center/cover,#3a2230}
+.feat img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;margin-bottom:1.2rem}
+/* responsive */
+@media(max-width:900px){
+ .menu{display:block}
+ nav ul{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:center;align-items:center;gap:1.6rem;background:rgba(6,21,29,.99);font:300 2.4rem var(--serif);transform:translateY(-100%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+ nav.open ul{transform:none}
+ header{z-index:30}nav{position:static}
+ .search{grid-template-columns:1fr 1fr}
+ .search label:first-child{grid-column:1/-1}
+ .search .btn{grid-column:1/-1;min-height:56px}
+ .dest{grid-template-columns:1fr 1fr;grid-auto-rows:minmax(260px,46vw)}
+ .card.tall{grid-row:span 1;grid-column:1/-1}
+ .feat{grid-template-columns:1fr}
+ .feat img{aspect-ratio:4/3}
+ .story{grid-template-columns:1fr}
+ .story figure{aspect-ratio:4/3}
+ .contact{grid-template-columns:1fr}
+ .side{position:static}
+ .dest.three{grid-template-columns:1fr 1fr}
+ .dest.two{grid-auto-rows:minmax(300px,48vw)}
+}
+@media(max-width:520px){
+ .dest{grid-template-columns:1fr;grid-auto-rows:280px}
+ .dest.two,.dest.three{grid-template-columns:1fr;grid-auto-rows:300px}
+ .g2,.pay{grid-template-columns:1fr}
+ .cta .btn{flex:1 1 100%}
+ .vid-toggle{top:calc(env(safe-area-inset-top,0px) + 78px)}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+ .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<header id="hd">
+ <a class="logo" href="#home" aria-label="Wayfarer home">Wayfarer</a>
+ <button class="back" id="back" hidden aria-label="Go back">← Back</button>
+ <nav id="nav" aria-label="Main">
+  <ul>
+   <li><a href="#destinations">Destinations</a></li>
+   <li><a href="#why">Why Wayfarer</a></li>
+   <li><a href="#stories">Stories</a></li>
+   <li><a href="#contact">Contact</a></li>
+   <li><a href="#plan">Plan a trip</a></li>
+  </ul>
+ </nav>
+ <button class="menu" id="menu" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span class="bars"><i></i><i></i><i></i></span></button>
+</header>
+
+<main id="top">
+<div class="page on" id="p-start">
+<div class="hero start"><video muted loop playsinline preload="auto" data-v="earth" aria-hidden="true"></video>
+ <button class="vid-toggle" aria-label="Pause background video">Pause video</button>
+ <h1><span><i>Wayfarer</i></span></h1>
+ <p class="lede">Journeys timed to the light.</p>
+ <div class="cta"><a class="btn primary" href="#home" data-start>Get started</a></div>
+</div>
+</div>
+<div class="page" id="p-home">
+<div class="hero">
+ <!-- VIDEO: swap the source below. Keep muted + playsinline so it autoplays on phones. -->
+ <video muted loop playsinline preload="auto" poster="images/hero-poster.webp" data-v="island" aria-hidden="true"></video>
+ <button class="vid-toggle" aria-label="Pause background video">Pause video</button>
+ <h1><span><i>Where the day</i></span><span><i>ends in gold</i></span></h1>
+ <p class="lede">Handpicked island stays, private sailings and unhurried itineraries, planned around the hour the light turns golden.</p>
+ <div class="cta">
+  <a class="btn primary" href="#plan">Plan my escape</a>
+  <a class="btn ghost" href="#destinations">Explore destinations</a>
+ </div>
+ <form class="search" id="plan" onsubmit="return go(event)">
+  <label>Destination
+   <select id="d"><option>Maldives</option><option>Bora Bora</option><option>Santorini</option><option>Bali</option><option>Seychelles</option></select>
+  </label>
+  <label>Departing<input type="date" id="dt" required></label>
+  <label>Travellers
+   <select id="g"><option>1 traveller</option><option selected>2 travellers</option><option>3–4 travellers</option><option>5+ travellers</option></select>
+  </label>
+  <button class="btn primary" type="submit">Plan this trip</button>
+ </form>
+</div>
+
+<section class="block"><div class="head rv"><h2>Featured islands</h2><a class="btn ghost" href="#destinations">See all destinations</a></div>
+<div class="dest two">
+  <a class="card rv" href="#maldives" style="--g:var(--im-maldives) center/cover,linear-gradient(170deg,#f6c177,#e0693f 55%,#5a2a45)"><h3>Maldives</h3><p>Overwater villas, house reefs and sandbank dinners.</p><small>From $2,400 · 7 nights</small></a>
+  <a class="card rv" href="#bora-bora" style="--g:var(--im-bora-bora) center 60%/cover,linear-gradient(160deg,#5fd0c4,#1f6f86 60%,#0c2a38)"><h3>Bora Bora</h3><p>Lagoon days under Mount Otemanu.</p><small>From $3,100 · 6 nights</small></a>
+   <a class="card rv" href="#santorini" style="--g:var(--im-santorini) center 40%/cover,linear-gradient(160deg,#f2d6b3,#d9835e 60%,#4a2b3d)"><h3>Santorini</h3><p>Caldera terraces and whitewashed lanes.</p><small>From $1,650 · 5 nights</small></a>
+  <a class="card rv" href="#bali" style="--g:var(--im-bali) center 70%/cover,linear-gradient(160deg,#8ed081,#2f7d5b 60%,#0c2a38)"><h3>Bali</h3><p>Rice terraces, temples and surf at dawn.</p><small>From $1,200 · 8 nights</small></a>
+ </div></section>
+<section class="block"><div class="rows">
+ <a class="row rv" href="#destinations"><span>Destinations<small>More islands, timed to the sun</small></span><span aria-hidden="true">→</span></a>
+ <a class="row rv" href="#why"><span>Why Wayfarer<small>Travel that feels unhurried</small></span><span aria-hidden="true">→</span></a>
+ <a class="row rv" href="#stories"><span>Stories<small>Guest stories</small></span><span aria-hidden="true">→</span></a>
+</div></section>
+<section class="close photo">
+ <h2 class="rv">Your island is waiting</h2>
+ <div class="cta rv"><a class="btn primary" href="#plan">Plan my escape</a><a class="btn ghost" href="#contact">Talk to a designer</a></div>
+</section>
+</div>
+<div class="page sub" id="p-destinations">
+<div class="bg"><video muted loop playsinline preload="metadata" data-v="sea" aria-hidden="true"></video></div>
+<div class="phero"><button class="vid-toggle" aria-label="Pause background video">Pause video</button><h1 class="rv">More islands, timed to the sun</h1><p class="rv">Each stay is chosen for its west-facing shoreline, its tranquillity and the people who run it.</p></div>
+<section class="block" id="destinations">
+  <div class="dest three">
+  <a class="card tall rv" href="#santorini" style="--g:var(--im-santorini) center 40%/cover,linear-gradient(160deg,#f2d6b3,#d9835e 60%,#4a2b3d)"><h3>Santorini</h3><p>Caldera terraces and whitewashed lanes.</p><small>From $1,650 · 5 nights</small></a>
+  <a class="card rv" href="#bali" style="--g:var(--im-bali) center 70%/cover,linear-gradient(160deg,#8ed081,#2f7d5b 60%,#0c2a38)"><h3>Bali</h3><p>Rice terraces, temples and surf at dawn.</p><small>From $1,200 · 8 nights</small></a>
+  <a class="card rv" href="#seychelles" style="--g:var(--im-seychelles) center 45%/cover,linear-gradient(160deg,#ffb88a,#c4527a 60%,#2b1d3b)"><h3>Seychelles</h3><p>Granite coves and secluded beaches.</p><small>From $2,200 · 7 nights</small></a>
+ </div>
+</section>
+
+<section class="close">
+ <h2 class="rv">Your island is waiting</h2>
+ <div class="cta rv"><a class="btn primary" href="#plan">Plan my escape</a><a class="btn ghost" href="#contact">Talk to a designer</a></div>
+</section>
+</div>
+<div class="page sub" id="p-why">
+<div class="bg"><video muted loop playsinline preload="metadata" data-v="road" aria-hidden="true"></video></div>
+<div class="phero"><button class="vid-toggle" aria-label="Pause background video">Pause video</button><h1 class="rv">Travel that feels unhurried</h1></div>
+<section class="block why" id="why">
+  <div class="feat">
+  <div class="rv"><img src="images/golden-river.webp" alt="A golden river at sunset with birds in flight" loading="lazy"><h3>Golden-hour planning</h3><p>We map every day around sunrise and sunset, so the best light is never an afterthought.</p></div>
+  <div class="rv"><img src="images/walkway.webp" alt="A lantern-lit wooden walkway through Bali rice terraces" loading="lazy"><h3>Local hosts only</h3><p>Family-run villas, independent guides and captains who know these waters well.</p></div>
+  <div class="rv"><img src="images/villa.webp" alt="An overwater villa with a private pool at sunset" loading="lazy"><h3>One designer, start to finish</h3><p>A dedicated travel designer answers your messages before and throughout your trip.</p></div>
+ </div>
+</section>
+
+<section class="close">
+ <h2 class="rv">Your island is waiting</h2>
+ <div class="cta rv"><a class="btn primary" href="#plan">Plan my escape</a><a class="btn ghost" href="#contact">Talk to a designer</a></div>
+</section>
+</div>
+<div class="page sub" id="p-stories">
+<div class="bg still"></div>
+<div class="phero"><h1 class="rv">Guest stories</h1></div>
+<section class="block story" id="stories">
+ <figure class="rv"><img src="images/couple.webp" alt="A couple walking along a beach at sunset" loading="lazy" width="736" height="1104"></figure>
+ <div class="rv">
+  <blockquote>“We stopped checking the time on day two. The sunsets told us when the day was done.”</blockquote>
+  <cite>Amira and Daniel, 9 nights in the Maldives</cite>
+  <p><a class="btn ghost" href="#plan">Start your own story</a></p>
+ </div>
+</section>
+
+<section class="close">
+ <h2 class="rv">Your island is waiting</h2>
+ <div class="cta rv"><a class="btn primary" href="#plan">Plan my escape</a><a class="btn ghost" href="#contact">Talk to a designer</a></div>
+</section>
+</div>
+<div class="page sub" id="p-contact">
+<div class="bg warm"></div>
+<div class="phero short"><h1 class="rv">Talk to a designer</h1><p class="rv">Tell us where you want to go, and a travel designer will reply within 24 hours.</p></div>
+<section class="block"><div class="contact">
+ <div>
+ <form class="panel" id="cf">
+  <fieldset><legend>1. Your details</legend><div class="g2">
+   <label class="f full">Full name<input id="c-name" autocomplete="name" required></label>
+   <label class="f">Email<input id="c-email" type="email" autocomplete="email" required></label>
+   <label class="f">Phone or WhatsApp<input id="c-phone" type="tel" autocomplete="tel" required></label>
+  </div></fieldset>
+  <fieldset><legend>2. Your trip</legend><div class="g2">
+   <label class="f">Destination<select id="c-dest"><option>Maldives</option><option>Bora Bora</option><option>Santorini</option><option>Bali</option><option>Seychelles</option></select></label>
+   <label class="f">Departing<input id="c-date" type="date" required></label>
+   <label class="f full">Travellers<select id="c-pax"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+   <label class="f full">Anything we should know?<textarea id="c-note" placeholder="Celebrations, dietary needs, preferred budget…"></textarea></label>
+  </div></fieldset>
+  <fieldset><legend>3. Payment</legend><div class="pay">
+   <label><input type="radio" name="pay" value="Card" checked>Card<small>Secure payment link</small></label>
+   <label><input type="radio" name="pay" value="Bank transfer">Bank transfer<small>Details sent by email</small></label>
+   <label><input type="radio" name="pay" value="JazzCash / Easypaisa">JazzCash / Easypaisa<small>Mobile wallet</small></label>
+   <label><input type="radio" name="pay" value="Pay later">Pay later<small>Confirm with your designer</small></label>
+  </div><p class="note">You won’t enter card details here. Your designer sends a secure payment link or the transfer details.</p></fieldset>
+  <label class="chk"><input type="checkbox" id="c-ok" required><span>I agree to be contacted about this booking request.</span></label>
+  <button class="btn primary" type="submit">Send booking request</button>
+ </form>
+ <div class="panel done" id="done" hidden>
+  <h3>Thank you, <span id="d-name"></span></h3>
+  <p>Your request <b id="d-ref"></b> is ready. Send it to your designer to confirm.</p>
+  <div class="cta"><a class="btn primary" id="mail" href="#">Send by email</a><a class="btn ghost" id="wa" href="#" target="_blank" rel="noopener">Send by WhatsApp</a></div>
+  <p class="note"><button type="button" id="edit" class="lnk">Edit details</button></p>
+ </div>
+ </div>
+ <aside class="side">
+  <div class="panel who"><span class="av" aria-hidden="true">W</span><div><b>Your travel designer</b><small>Replies within 24 hours</small></div></div>
+  <div class="panel sum"><h3>Trip summary</h3><dl>
+   <div><dt>Trip</dt><dd id="s-dest"></dd></div>
+   <div><dt>Travellers</dt><dd id="s-pax"></dd></div>
+   <div><dt>Estimated total</dt><dd id="s-total"></dd></div>
+   <div class="due"><dt>Deposit (20%)</dt><dd id="s-dep"></dd></div></dl>
+   <p class="note">Prices are per person, based on the “from” rate. Your designer confirms the final amount.</p></div>
+  <div class="panel"><h3>Contact</h3><ul class="cd">
+   <li><a href="mailto:hello@wayfarer.travel">hello@wayfarer.travel</a></li>
+   <li><a href="https://wa.me/920000000000" target="_blank" rel="noopener">WhatsApp +92 300 0000000</a></li>
+   <li>Monday to Saturday, 9:00–18:00</li></ul></div>
+ </aside>
+</div></section>
+<section class="close">
+ <h2 class="rv">Your island is waiting</h2>
+ <div class="cta rv"><a class="btn primary" href="#plan">Plan my escape</a><a class="btn ghost" href="#contact">Talk to a designer</a></div>
+</section>
+</div>
+<div class="page sub" id="p-maldives">
+<div class="bg" style="background:var(--im-maldives) center/cover"></div>
+<div class="phero short"><h1 class="rv">Maldives</h1><p class="rv">Overwater villas, house reefs and sandbank dinners.</p><span class="chip rv">From $2,400 per person · 7 nights</span></div>
+<section class="block"><div class="contact">
+ <div class="panel"><h3>Overview</h3><p>Wake above a turquoise lagoon, snorkel a house reef before breakfast and end each day on the deck as the sky turns gold.</p>
+  <h3>Highlights</h3><ul class="hl"><li>Overwater villa with a private deck</li><li>Snorkelling on a house reef</li><li>Dinner on a private sandbank</li><li>Sunset cruise by traditional dhoni</li></ul>
+  <h3>Good to know</h3><dl class="facts"><div><dt>Location</dt><dd>Indian Ocean</dd></div><div><dt>Best time to visit</dt><dd>November to April</dd></div><div><dt>Stay style</dt><dd>Overwater villa</dd></div><div><dt>Getting there</dt><dd>Fly into Malé (MLE), then a speedboat or seaplane to your resort.</dd></div></dl>
+  <h3>What’s included</h3><ul class="hl"><li>Accommodation for 7 nights</li><li>Daily breakfast</li><li>Return airport transfers</li><li>One signature sunset experience</li><li>A dedicated travel designer</li></ul><p class="note">Indicative. International flights are not included. Your designer confirms the final details.</p></div>
+ <aside class="side"><div class="panel sum"><h3>From $2,400</h3><dl>
+  <div><dt>Duration</dt><dd>7 nights</dd></div><div><dt>Price per person</dt><dd>$2,400</dd></div><div class="due"><dt>Deposit (20%)</dt><dd>$480</dd></div></dl>
+  <a class="btn primary" style="width:100%;margin-top:1.2rem" href="#contact" data-dest="Maldives">Book this trip</a>
+  <p class="note">Prices are per person. Your designer confirms the final amount.</p></div></aside>
+</div></section>
+</div>
+<div class="page sub" id="p-bora-bora">
+<div class="bg" style="background:var(--im-bora-bora) center/cover"></div>
+<div class="phero short"><h1 class="rv">Bora Bora</h1><p class="rv">Lagoon days under Mount Otemanu.</p><span class="chip rv">From $3,100 per person · 6 nights</span></div>
+<section class="block"><div class="contact">
+ <div class="panel"><h3>Overview</h3><p>Glide across a glass-clear lagoon beneath Mount Otemanu, with a thatched overwater bungalow as your base.</p>
+  <h3>Highlights</h3><ul class="hl"><li>Overwater bungalow stay</li><li>Lagoon day beneath Mount Otemanu</li><li>Snorkelling with reef fish and rays</li><li>Sunset sail across the lagoon</li></ul>
+  <h3>Good to know</h3><dl class="facts"><div><dt>Location</dt><dd>French Polynesia</dd></div><div><dt>Best time to visit</dt><dd>May to October</dd></div><div><dt>Stay style</dt><dd>Overwater bungalow</dd></div><div><dt>Getting there</dt><dd>Fly into Bora Bora (BOB) via Papeete, then a short boat transfer.</dd></div></dl>
+  <h3>What’s included</h3><ul class="hl"><li>Accommodation for 6 nights</li><li>Daily breakfast</li><li>Return airport transfers</li><li>One signature sunset experience</li><li>A dedicated travel designer</li></ul><p class="note">Indicative. International flights are not included. Your designer confirms the final details.</p></div>
+ <aside class="side"><div class="panel sum"><h3>From $3,100</h3><dl>
+  <div><dt>Duration</dt><dd>6 nights</dd></div><div><dt>Price per person</dt><dd>$3,100</dd></div><div class="due"><dt>Deposit (20%)</dt><dd>$620</dd></div></dl>
+  <a class="btn primary" style="width:100%;margin-top:1.2rem" href="#contact" data-dest="Bora Bora">Book this trip</a>
+  <p class="note">Prices are per person. Your designer confirms the final amount.</p></div></aside>
+</div></section>
+</div>
+<div class="page sub" id="p-santorini">
+<div class="bg" style="background:var(--im-santorini) center/cover"></div>
+<div class="phero short"><h1 class="rv">Santorini</h1><p class="rv">Caldera terraces and whitewashed lanes.</p><span class="chip rv">From $1,650 per person · 5 nights</span></div>
+<section class="block"><div class="contact">
+ <div class="panel"><h3>Overview</h3><p>Stay on a cliff-top terrace above the caldera, wander whitewashed lanes and watch the sun set over the sea.</p>
+  <h3>Highlights</h3><ul class="hl"><li>Caldera-view terrace stay</li><li>Sunset in Oia</li><li>Wine tasting at a family vineyard</li><li>Catamaran sail around the caldera</li></ul>
+  <h3>Good to know</h3><dl class="facts"><div><dt>Location</dt><dd>Cyclades, Greece</dd></div><div><dt>Best time to visit</dt><dd>May to October</dd></div><div><dt>Stay style</dt><dd>Suite with a caldera view</dd></div><div><dt>Getting there</dt><dd>Fly into Santorini (JTR) or take a ferry from Athens.</dd></div></dl>
+  <h3>What’s included</h3><ul class="hl"><li>Accommodation for 5 nights</li><li>Daily breakfast</li><li>Return airport transfers</li><li>One signature sunset experience</li><li>A dedicated travel designer</li></ul><p class="note">Indicative. International flights are not included. Your designer confirms the final details.</p></div>
+ <aside class="side"><div class="panel sum"><h3>From $1,650</h3><dl>
+  <div><dt>Duration</dt><dd>5 nights</dd></div><div><dt>Price per person</dt><dd>$1,650</dd></div><div class="due"><dt>Deposit (20%)</dt><dd>$330</dd></div></dl>
+  <a class="btn primary" style="width:100%;margin-top:1.2rem" href="#contact" data-dest="Santorini">Book this trip</a>
+  <p class="note">Prices are per person. Your designer confirms the final amount.</p></div></aside>
+</div></section>
+</div>
+<div class="page sub" id="p-bali">
+<div class="bg" style="background:var(--im-bali) center/cover"></div>
+<div class="phero short"><h1 class="rv">Bali</h1><p class="rv">Rice terraces, temples and surf at dawn.</p><span class="chip rv">From $1,200 per person · 8 nights</span></div>
+<section class="block"><div class="contact">
+ <div class="panel"><h3>Overview</h3><p>Start at dawn among green rice terraces, spend afternoons at ancient temples and finish the day on the beach.</p>
+  <h3>Highlights</h3><ul class="hl"><li>Dawn walks through the rice terraces</li><li>Temple visits with a local guide</li><li>A surf lesson on a quiet beach</li><li>Balinese cooking class</li></ul>
+  <h3>Good to know</h3><dl class="facts"><div><dt>Location</dt><dd>Indonesia</dd></div><div><dt>Best time to visit</dt><dd>April to October</dd></div><div><dt>Stay style</dt><dd>Private villa</dd></div><div><dt>Getting there</dt><dd>Fly into Denpasar (DPS), then a private driver to your villa.</dd></div></dl>
+  <h3>What’s included</h3><ul class="hl"><li>Accommodation for 8 nights</li><li>Daily breakfast</li><li>Return airport transfers</li><li>One signature sunset experience</li><li>A dedicated travel designer</li></ul><p class="note">Indicative. International flights are not included. Your designer confirms the final details.</p></div>
+ <aside class="side"><div class="panel sum"><h3>From $1,200</h3><dl>
+  <div><dt>Duration</dt><dd>8 nights</dd></div><div><dt>Price per person</dt><dd>$1,200</dd></div><div class="due"><dt>Deposit (20%)</dt><dd>$240</dd></div></dl>
+  <a class="btn primary" style="width:100%;margin-top:1.2rem" href="#contact" data-dest="Bali">Book this trip</a>
+  <p class="note">Prices are per person. Your designer confirms the final amount.</p></div></aside>
+</div></section>
+</div>
+<div class="page sub" id="p-seychelles">
+<div class="bg" style="background:var(--im-seychelles) center/cover"></div>
+<div class="phero short"><h1 class="rv">Seychelles</h1><p class="rv">Granite coves and secluded beaches.</p><span class="chip rv">From $2,200 per person · 7 nights</span></div>
+<section class="block"><div class="contact">
+ <div class="panel"><h3>Overview</h3><p>Explore granite-boulder coves, hop between islands and find a stretch of sand all to yourselves.</p>
+  <h3>Highlights</h3><ul class="hl"><li>Granite coves and secluded beaches</li><li>Island-hopping to Praslin and La Digue</li><li>A private beach picnic</li><li>Snorkelling in a marine park</li></ul>
+  <h3>Good to know</h3><dl class="facts"><div><dt>Location</dt><dd>Indian Ocean</dd></div><div><dt>Best time to visit</dt><dd>April to May and October to November</dd></div><div><dt>Stay style</dt><dd>Beachfront villa</dd></div><div><dt>Getting there</dt><dd>Fly into Mahé (SEZ), then a ferry or short flight between islands.</dd></div></dl>
+  <h3>What’s included</h3><ul class="hl"><li>Accommodation for 7 nights</li><li>Daily breakfast</li><li>Return airport transfers</li><li>One signature sunset experience</li><li>A dedicated travel designer</li></ul><p class="note">Indicative. International flights are not included. Your designer confirms the final details.</p></div>
+ <aside class="side"><div class="panel sum"><h3>From $2,200</h3><dl>
+  <div><dt>Duration</dt><dd>7 nights</dd></div><div><dt>Price per person</dt><dd>$2,200</dd></div><div class="due"><dt>Deposit (20%)</dt><dd>$440</dd></div></dl>
+  <a class="btn primary" style="width:100%;margin-top:1.2rem" href="#contact" data-dest="Seychelles">Book this trip</a>
+  <p class="note">Prices are per person. Your designer confirms the final amount.</p></div></aside>
+</div></section>
+</div>
+</main>
+<footer><span>© 2026 Wayfarer Travel</span><span><a href="#">Privacy</a> &nbsp; <a href="#">Terms</a> &nbsp; <a href="mailto:hello@wayfarer.travel">hello@wayfarer.travel</a></span></footer>
+
+<div class="tour" id="tour" hidden><div class="tour-in"><div><b id="t-step"></b><small id="t-hint"></small></div><div class="tour-act"><button class="lnk" id="t-skip" type="button">Skip tour</button><button class="btn primary" id="t-next" type="button" disabled>Next</button></div></div></div>
+<script>
+(function(){
+ var V={earth:'earth.mp4',island:'hero.mp4',sea:'sea.mp4',road:'road-video.mp4'};
+ var hd=document.getElementById('hd'),nav=document.getElementById('nav'),mb=document.getElementById('menu');
+ var seen=false,touring=false,idx=0,STEPS=[['home','Home'],['destinations','Destinations'],['why','Why Wayfarer'],['stories','Stories'],['contact','Contact']];
+ try{seen=localStorage.getItem('wf_tour')==='1'}catch(x){}
+ var cur='start',stack=[],pages=document.querySelectorAll('.page'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function sc(){hd.classList.toggle('solid',scrollY>60)}addEventListener('scroll',sc,{passive:true});sc();
+ function closeMenu(){nav.classList.remove('open');mb.setAttribute('aria-expanded',false);mb.classList.remove('open')}
+ mb.onclick=function(){var o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o);mb.classList.toggle('open',o)};
+ function show(id){
+  if(!document.getElementById('p-'+id))id='home';
+  pages.forEach(function(p){p.classList.toggle('on',p.id==='p-'+id)});
+  document.querySelectorAll('.page video').forEach(function(v){
+   var on=v.closest('.page').classList.contains('on');
+   if(on){if(!v.getAttribute('src'))v.src=V[v.dataset.v];if(!reduce)v.play().catch(function(){})}else v.pause();
+  });
+  document.querySelectorAll('.page.on .vid-toggle').forEach(function(b){b.textContent=reduce?'Play video':'Pause video'});
+  nav.querySelectorAll('a').forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#'+id)});
+  if(touring){var k=-1;STEPS.forEach(function(s,n){if(s[0]===id)k=n});if(k>=0){idx=k;setTimeout(tourUI,800)}$('tour').hidden=k<0}
+  cur=id;$('back').hidden=(id==='home'||id==='start');document.body.classList.toggle('intro',id==='start');document.title=(id==='home'||id==='start'?'':id.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()})+' · ')+'Wayfarer';
+ }
+ function route(h,isBack){
+  h=(h||'').replace('#','');
+  var id=h==='plan'?'home':(h||'start');if(!document.getElementById('p-'+id))id='home';
+  if(!isBack&&id!==cur){stack.push(cur);if(stack.length>30)stack.shift()}
+  if(h==='plan'){show('home');setTimeout(function(){document.getElementById('plan').scrollIntoView({behavior:'smooth',block:'center'})},60)}
+  else{show(id);scrollTo(0,0)}
+ }
+ document.addEventListener('click',function(e){
+  if(e.target.closest('#back')){var p=stack.pop()||'home';try{history.replaceState(null,'','#'+p)}catch(x){}route(p,true);return}
+  var b=e.target.closest('.vid-toggle');
+  if(b){var vs=b.closest('.page').querySelectorAll('video'),p=vs[0].paused;vs.forEach(function(v){p?v.play().catch(function(){}):v.pause()});
+   b.textContent=p?'Pause video':'Play video';b.setAttribute('aria-label',p?'Pause background video':'Play background video');return}
+  var a=e.target.closest('a[href^="#"]');if(!a||a.getAttribute('href').length<2)return;
+  if(a.hasAttribute('data-start')){e.preventDefault();startTour();return}
+  e.preventDefault();closeMenu();var h=a.getAttribute('href');if(a.dataset.dest){$('c-dest').value=a.dataset.dest;upd()}
+  try{history.replaceState(null,'',h)}catch(x){}
+  route(h);
+ });
+ addEventListener('hashchange',function(){route(location.hash)});
+ route('');
+ var d=document.getElementById('dt'),n=new Date();n.setDate(n.getDate()+30);d.value=n.toISOString().slice(0,10);d.min=new Date().toISOString().slice(0,10);
+ var P={'Maldives':[2400,7],'Bora Bora':[3100,6],'Santorini':[1650,5],'Bali':[1200,8],'Seychelles':[2200,7]};
+ function $(i){return document.getElementById(i)}
+ function upd(){var k=$('c-dest').value,n=+$('c-pax').value||1,p=P[k],tot=p[0]*n;
+  $('s-dest').textContent=k+' · '+p[1]+' nights';$('s-pax').textContent=n;
+  $('s-total').textContent='$'+tot.toLocaleString('en-US');$('s-dep').textContent='$'+Math.round(tot*.2).toLocaleString('en-US')}
+ ['c-dest','c-pax'].forEach(function(i){$(i).addEventListener('change',upd)});
+ $('c-date').value=d.value;$('c-date').min=d.min;upd();
+ $('cf').addEventListener('submit',function(e){e.preventDefault();
+  var g=function(i){return $(i).value.trim()},pay=document.querySelector('input[name=pay]:checked').value,
+  ref='WF-'+Math.random().toString(36).slice(2,7).toUpperCase(),
+  msg=['Booking request '+ref,'Name: '+g('c-name'),'Email: '+g('c-email'),'Phone: '+g('c-phone'),'Trip: '+$('s-dest').textContent,'Departing: '+g('c-date'),'Travellers: '+g('c-pax'),'Estimated total: '+$('s-total').textContent,'Deposit (20%): '+$('s-dep').textContent,'Payment: '+pay,'Notes: '+(g('c-note')||'-')].join('\n');
+  $('d-name').textContent=g('c-name').split(' ')[0];$('d-ref').textContent=ref;
+  $('mail').href='mailto:hello@wayfarer.travel?subject='+encodeURIComponent('Booking request '+ref)+'&body='+encodeURIComponent(msg);
+  $('wa').href='https://wa.me/920000000000?text='+encodeURIComponent(msg);
+  $('cf').hidden=true;$('done').hidden=false;$('done').scrollIntoView({behavior:'smooth',block:'center'})});
+ $('edit').onclick=function(){$('done').hidden=true;$('cf').hidden=false};
+ window.go=function(e){e.preventDefault();$('c-dest').value=$('d').value;$('c-date').value=$('dt').value;
+  $('c-pax').value=Math.min(parseInt($('g').value)||2,8);upd();
+  try{history.replaceState(null,'','#contact')}catch(x){}route('contact');return false};
+ function pulse(){var b=$('tour');b.classList.remove('pulse');void b.offsetWidth;b.classList.add('pulse')}
+ function atEnd(){return innerHeight+scrollY>=document.documentElement.scrollHeight-140}
+ function tourUI(){if(!touring)return;var ok=atEnd();$('t-step').textContent='Step '+(idx+1)+' of 5 · '+STEPS[idx][1];
+  $('t-hint').textContent=ok?'You have seen this page':'Scroll down to see the whole page';$('t-next').disabled=!ok;$('t-next').textContent=idx===4?'Finish':'Next'}
+ addEventListener('scroll',tourUI,{passive:true});addEventListener('resize',tourUI);
+ function startTour(){if(seen){route('home');return}touring=true;idx=0;document.body.classList.add('touring');$('tour').hidden=false;route('home');setTimeout(tourUI,800)}
+ function endTour(){touring=false;seen=true;try{localStorage.setItem('wf_tour','1')}catch(x){}document.body.classList.remove('touring');$('tour').hidden=true}
+ $('t-next').onclick=function(){if(idx<4){idx++;route(STEPS[idx][0]);setTimeout(tourUI,800)}else{endTour();route('home')}};
+ $('t-skip').onclick=endTour;
+ var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});
+ document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>
