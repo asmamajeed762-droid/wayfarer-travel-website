@@ -14,19 +14,16 @@ A premium and responsive travel website designed to showcase beautiful island de
 - Travel planning and destination exploration sections
 - Elegant typography and modern UI
 
-# Project Screenshots
+## 🖥️ Project Screenshots
 
-# Homepage
+### Homepage
+![Homepage](screenshot-home.webp)
 
-"Wayfarer Homepage" (Images/screenshot-home.webp)
+### Destinations
+![Destinations](screenshot-destinations.webp)
 
-# Destinations Section
-
-"Wayfarer Destinations" (Images/screenshot-destinations.webp)
-
-# Travel Experience Section
-
-"Wayfarer Travel Experience" (Images/screenshot-experience.webp)
+### Travel Experience
+![Travel Experience](screenshot-experience.webp)
 
 # Technologies Used
 
