@@ -14,16 +14,7 @@ A premium and responsive travel website designed to showcase beautiful island de
 - Travel planning and destination exploration sections
 - Elegant typography and modern UI
 
-## 🖥️ Project Screenshots
 
-### 1. Homepage
-![Homepage](screenshot-home.webp)
-
-### 2. Destinations
-![Destinations](screenshot-destinations.webp)
-
-### 3. Travel Experience
-![Travel Experience](screenshot-experience.webp)
 
 # Technologies Used
 
